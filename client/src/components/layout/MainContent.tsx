@@ -1,6 +1,7 @@
 import { useAppStore } from '../../store/useAppStore';
 import { AnalyzeView } from '../views/AnalyzeView';
 import { DocumentationView } from '../views/DocumentationView';
+import { PlaygroundView } from '../views/PlaygroundView';
 import { CacheView } from '../views/CacheView';
 import { SettingsView } from '../views/SettingsView';
 
@@ -12,6 +13,7 @@ export function MainContent() {
       <div className="container mx-auto p-6">
         {currentView === 'analyze' && <AnalyzeView />}
         {currentView === 'documentation' && <DocumentationView />}
+        {currentView === 'playground' && <PlaygroundView />}
         {currentView === 'cache' && <CacheView />}
         {currentView === 'settings' && <SettingsView />}
       </div>

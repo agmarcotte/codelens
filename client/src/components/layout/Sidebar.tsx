@@ -1,4 +1,4 @@
-import { FileSearch, FileText, Database, Settings } from 'lucide-react';
+import { FileSearch, FileText, Database, Settings, Play } from 'lucide-react';
 import { useAppStore } from '../../store/useAppStore';
 import type { AppState } from '../../types';
 
@@ -18,6 +18,11 @@ const navItems: NavItem[] = [
     id: 'documentation',
     label: 'Documentation',
     icon: <FileText className="h-5 w-5" />,
+  },
+  {
+    id: 'playground',
+    label: 'Playground',
+    icon: <Play className="h-5 w-5" />,
   },
   {
     id: 'cache',
