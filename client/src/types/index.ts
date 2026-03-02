@@ -166,7 +166,7 @@ export interface DocumentationState {
 export interface AppState {
   theme: 'light' | 'dark';
   sidebarOpen: boolean;
-  currentView: 'analyze' | 'documentation' | 'cache' | 'settings';
+  currentView: 'analyze' | 'documentation' | 'playground' | 'cache' | 'settings';
 }
 
 // Request Types
