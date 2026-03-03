@@ -34,7 +34,7 @@
       "@shared/*": ["src/shared/*"],
       "@utils/*": ["src/utils/*"]
     },
-    "types": []
+    "types": ["jest", "node"]
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist", "**/*.test.ts", "**/*.spec.ts"]
