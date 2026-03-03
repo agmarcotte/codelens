@@ -35,23 +35,33 @@ cd codelens
 ### 2. Install Dependencies
 
 ```bash
-# Install all dependencies (backend + frontend)
+# Install backend dependencies
 npm install
-```
 
-This will install dependencies for both the backend and frontend projects.
+# Install frontend dependencies
+cd client && npm install && cd ..
+```
 
 ### 3. Start Development Servers
 
 ```bash
-# Start both backend and frontend in development mode
+# Start both backend and frontend with one command
 npm run dev
 ```
 
 This command will:
-- Start the backend API server on `http://localhost:3001`
+- Start the backend API server on `http://localhost:3000`
 - Start the frontend development server on `http://localhost:5173`
-- Open your browser automatically
+- Display color-coded logs (blue for backend, green for frontend)
+
+**Alternative - Run separately:**
+```bash
+# Terminal 1 - Backend only
+npm run dev:server
+
+# Terminal 2 - Frontend only
+npm run dev:client
+```
 
 ### 4. Verify Installation
 
@@ -63,77 +73,76 @@ Open your browser and navigate to `http://localhost:5173`. You should see the Co
 
 ```
 codelens/
-├── backend/          # Node.js + Express API
-│   ├── src/         # Source code
-│   └── tests/       # Backend tests
-├── frontend/        # React + TypeScript UI
-│   ├── src/         # Source code
-│   └── tests/       # Frontend tests
+├── src/              # Backend source code
+│   ├── server/      # Express API server
+│   ├── shared/      # Shared types
+│   └── utils/       # Utility functions
+├── client/          # React + TypeScript frontend
+│   ├── src/         # Frontend source code
+│   └── public/      # Static assets
 ├── docs/            # Documentation
-└── scripts/         # Build and utility scripts
+├── e2e/             # End-to-end tests
+└── dist/            # Build output
 ```
 
 ---
 
 ## 🔧 Development Commands
 
-### Backend Commands
+### Main Commands (Root Directory)
 
 ```bash
-# Start backend server only
-cd backend
+# Start both servers (recommended)
 npm run dev
+
+# Start backend only
+npm run dev:server
+
+# Start frontend only
+npm run dev:client
+
+# Build backend
+npm run build
+
+# Build both backend and frontend
+npm run build:all
 
 # Run backend tests
 npm test
 
-# Run backend tests in watch mode
-npm run test:watch
-
-# Build backend for production
-npm run build
-
-# Start production server
-npm start
-```
-
-### Frontend Commands
-
-```bash
-# Start frontend dev server only
-cd frontend
-npm run dev
-
-# Run frontend tests
-npm test
-
-# Run tests in watch mode
-npm run test:watch
-
-# Build for production
-npm run build
-
-# Preview production build
-npm run preview
-```
-
-### Root Commands
-
-```bash
-# Start both servers
-npm run dev
-
-# Run all tests
-npm test
-
-# Build everything
-npm run build
+# Run all tests (backend + frontend + e2e)
+npm run test:all
 
 # Run linting
 npm run lint
 
 # Format code
 npm run format
+```
+
+### Backend Commands
+
+```bash
+# From root directory
+npm run dev:server      # Start backend server
+npm test                # Run backend tests
+npm run test:watch      # Run tests in watch mode
+npm run test:coverage   # Generate coverage report
+npm run build           # Build for production
+npm start               # Start production server
+```
+
+### Frontend Commands
+
+```bash
+# From client directory
+cd client
+npm run dev             # Start dev server
+npm test                # Run tests
+npm run test:ui         # Run tests with UI
+npm run test:coverage   # Generate coverage report
+npm run build           # Build for production
+npm run preview         # Preview production build
 ```
 
 ---
@@ -167,23 +176,21 @@ npm run format
 ### Using the API
 
 ```bash
-# Analyze a project
-curl -X POST http://localhost:3001/api/analyze \
+# Health check
+curl http://localhost:3000/health
+
+# Analyze a file
+curl -X POST http://localhost:3000/api/v1/analyze/file \
   -H "Content-Type: application/json" \
   -d '{
-    "path": "/path/to/your/project",
-    "options": {
-      "languages": ["typescript", "javascript"]
-    }
+    "path": "./src/server/index.ts"
   }'
 
-# Generate documentation
-curl -X POST http://localhost:3001/api/generate \
-  -H "Content-Type: application/json" \
-  -d '{
-    "analysisId": "your-analysis-id",
-    "format": "html"
-  }'
+# Get cache stats
+curl http://localhost:3000/api/v1/cache/stats
+
+# Clear cache
+curl -X DELETE http://localhost:3000/api/v1/cache
 ```
 
 ---
@@ -238,27 +245,29 @@ describe('TypeScriptAnalyzer', () => {
 
 ### Configuration Files
 
-- **Backend**: `backend/.env` - API configuration
-- **Frontend**: `frontend/.env` - UI configuration
-- **Tailwind**: `frontend/tailwind.config.js` - Styling
+- **Backend**: `.env` - API configuration (root directory)
+- **Frontend**: `client/.env` - UI configuration
+- **Tailwind**: `client/tailwind.config.js` - Styling
 - **TypeScript**: `tsconfig.json` - Type checking
+- **Jest**: `jest.config.js` - Backend testing
+- **Vitest**: `client/vitest.config.ts` - Frontend testing
 
 ### Environment Variables
 
-Create `.env` files in backend and frontend directories:
+Create `.env` files:
 
-**backend/.env**
+**Root .env (Backend)**
 ```env
-PORT=3001
+PORT=3000
 NODE_ENV=development
-LOG_LEVEL=debug
-CACHE_ENABLED=true
+LOG_LEVEL=info
+CACHE_MAX_SIZE=104857600
+CACHE_TTL=3600000
 ```
 
-**frontend/.env**
+**client/.env (Frontend)**
 ```env
-VITE_API_URL=http://localhost:3001
-VITE_APP_TITLE=CodeLens
+VITE_API_BASE_URL=http://localhost:3000
 ```
 
 ---
@@ -267,29 +276,43 @@ VITE_APP_TITLE=CodeLens
 
 ### Port Already in Use
 
-If you see "Port 3001 already in use":
+If you see "Port 3000 already in use" or "Port 5173 already in use":
 ```bash
-# Find and kill the process
-lsof -ti:3001 | xargs kill -9
+# Find and kill the process on port 3000
+lsof -ti:3000 | xargs kill -9
 
-# Or use a different port
-PORT=3002 npm run dev
+# Find and kill the process on port 5173
+lsof -ti:5173 | xargs kill -9
+
+# Or use different ports
+PORT=3002 npm run dev:server
 ```
 
 ### Module Not Found
 
 ```bash
-# Clear node_modules and reinstall
+# Clear and reinstall backend dependencies
 rm -rf node_modules package-lock.json
 npm install
+
+# Clear and reinstall frontend dependencies
+cd client
+rm -rf node_modules package-lock.json
+npm install
+cd ..
 ```
 
 ### Build Errors
 
 ```bash
-# Clear build cache
-npm run clean
+# Backend build
 npm run build
+
+# Frontend build
+cd client && npm run build
+
+# Both
+npm run build:all
 ```
 
 ### TypeScript Errors
@@ -298,8 +321,33 @@ npm run build
 # Check TypeScript configuration
 npx tsc --noEmit
 
-# Update TypeScript
-npm install -D typescript@latest
+# Check frontend TypeScript
+cd client && npx tsc --noEmit
+```
+
+### Security Vulnerabilities
+
+```bash
+# Check for vulnerabilities
+npm audit
+
+# Fix vulnerabilities (backend)
+npm audit fix
+
+# Check frontend
+cd client && npm audit
+
+# Fix frontend vulnerabilities
+cd client && npm audit fix
+```
+
+### Tailwind CSS Issues
+
+If you see Tailwind CSS errors:
+```bash
+# Ensure @tailwindcss/postcss is installed
+cd client
+npm install @tailwindcss/postcss
 ```
 
 ---

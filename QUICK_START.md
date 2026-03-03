@@ -25,26 +25,27 @@ npm install
 cd ..
 ```
 
-### 3. Start the Backend Server
+### 3. Start Both Servers (Single Command!)
 
 ```bash
 # From the codelens directory
 npm run dev
 ```
 
-The backend API will start at `http://localhost:3000`
+This will start:
+- Backend API at `http://localhost:3000`
+- Frontend app at `http://localhost:5173`
 
-### 4. Start the Frontend (New Terminal)
-
+**Alternative**: Run servers separately:
 ```bash
-# From the codelens directory
-cd client
-npm run dev
+# Terminal 1 - Backend only
+npm run dev:server
+
+# Terminal 2 - Frontend only
+npm run dev:client
 ```
 
-The frontend will start at `http://localhost:5173`
-
-### 5. Open Your Browser
+### 4. Open Your Browser
 
 Navigate to `http://localhost:5173` and start analyzing code!
 
@@ -152,15 +153,21 @@ curl http://localhost:3000/api/v1/cache/stats
 
 ## 🐛 Troubleshooting
 
+### Servers won't start
+- Check if ports 3000 and 5173 are available
+- Verify Node.js version: `node --version` (requires 20+)
+- Reinstall dependencies: `npm install && cd client && npm install`
+
 ### Backend won't start
+- Run separately: `npm run dev:server`
 - Check if port 3000 is available
-- Verify Node.js version: `node --version`
-- Try: `npm install` again
+- Check backend logs for errors
 
 ### Frontend won't start
+- Run separately: `npm run dev:client`
 - Check if port 5173 is available
 - Verify dependencies: `cd client && npm install`
-- Clear cache: `rm -rf node_modules && npm install`
+- Clear cache: `cd client && rm -rf node_modules && npm install`
 
 ### API connection errors
 - Ensure backend is running at `http://localhost:3000`
@@ -171,6 +178,11 @@ curl http://localhost:3000/api/v1/cache/stats
 - Check file path is correct and accessible
 - Ensure file is TypeScript or JavaScript
 - Check backend logs for errors
+
+### Security vulnerabilities
+- Run: `npm audit`
+- Fix: `npm audit fix`
+- Check both backend and frontend: `cd client && npm audit`
 
 ## 📚 Next Steps
 

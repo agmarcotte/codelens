@@ -54,7 +54,7 @@
 ## 🚀 Quick Start
 
 ### Prerequisites
-- Node.js 20+ 
+- Node.js 20+
 - npm or pnpm
 - Git
 
@@ -65,16 +65,21 @@
 git clone <repository-url>
 cd codelens
 
-# Install dependencies
+# Install dependencies (backend)
 npm install
 
-# Start development servers
+# Install dependencies (frontend)
+cd client && npm install && cd ..
+
+# Start both servers with one command
 npm run dev
 ```
 
 This will start:
-- Backend API on `http://localhost:3001`
+- Backend API on `http://localhost:3000`
 - Frontend app on `http://localhost:5173`
+
+Then open `http://localhost:5173` in your browser!
 
 ---
 

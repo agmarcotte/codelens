@@ -1,4 +1,4 @@
-import { Settings as SettingsIcon, Moon, Sun } from 'lucide-react';
+import { Moon, Sun } from 'lucide-react';
 import { useAppStore } from '../../store/useAppStore';
 
 export function SettingsView() {
