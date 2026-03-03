@@ -23,8 +23,8 @@ export function FadeIn({
   const directions = {
     up: { y: 20, x: 0 },
     down: { y: -20, x: 0 },
-    left: { y: 0, x: 20 },
-    right: { y: 0, x: -20 },
+    left: { y: 0, x: -20 },
+    right: { y: 0, x: 20 },
     none: { y: 0, x: 0 },
   };
 
